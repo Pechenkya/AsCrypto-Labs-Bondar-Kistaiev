@@ -101,7 +101,11 @@ def generate_prime(len: int, excl = []):
     gen = BBS(int('425D2B9BFDB25B9CF6C416CC6E37B59C1F', 16), int('D5BBB96D30086EC484EBA3D7F9CAEB07', 16))
 
     while True:
-        p = bytes_to_num(gen.generate_bytes(len // 8))
+        seq = gen.generate_bytes(len // 8)
+        if seq[0] < 128:
+            continue
+
+        p = bytes_to_num(seq)
         if check_prime(p) and (p not in excl):
             return p
 
