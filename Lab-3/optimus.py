@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import random
+import sympy
 
 class BBS:
     def __init__(self, p, q, state = 0):
@@ -141,36 +142,12 @@ def CRT(a, n):
 
     return sum([a[i]*M[i]*N[i] for i in range(0, len(a))]) % n_prod
 
-def jacobi(a, n):
-    a = int(a)
-    a = a % n
-    
-    if math.gcd(a, n) != 1:
-        return 0
-
-    if a == 1:
-        return 1
-
-    if a > n:
-        return jacobi(a % n, n)
-
-    if a % 2 == 0:
-        if n % 8 == 1 or n % 8 == 7:
-            return jacobi(a // 2, n)
-        else:
-            return (-1) * jacobi(a // 2, n)
-
-    if n % 4 == 1 or a % 4 == 1:
-        return jacobi(n, a)
-    else:
-        return (-1) * jacobi(n, a)
-
 
 def sqrt_modp(a, p):
     a = a % p
 
-    if jacobi(a, p) != 1:
-        print(f"error a = {a}, p = {p}")
+    if sympy.jacobi_symbol(a, p) != 1:
+        raise RuntimeError(f"error a = {a}, p = {p}")
 
     if p % 4 == 3:
         # print("4k + 3")
@@ -190,7 +167,7 @@ def sqrt_modp(a, p):
     if p % 8 == 1:
         # print("8k + 1")
         b = 2
-        while jacobi(b, p) != -1:
+        while sympy.jacobi_symbol(b, p) != -1:
             b = random.randrange(3, p - 1)
 
         t_a = (p - 1) // 2
