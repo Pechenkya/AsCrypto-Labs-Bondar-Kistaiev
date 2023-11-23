@@ -139,6 +139,7 @@ def CRT(a, n):
 
 def jacobi(a, n):
     a = int(a)
+    a = a % n
     
     if math.gcd(a, n) != 1:
         return 0
