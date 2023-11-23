@@ -151,9 +151,9 @@ def jacobi(a, n):
 
     if a % 2 == 0:
         if n % 8 == 1 or n % 8 == 7:
-            return jacobi(a / 2, n)
+            return jacobi(a // 2, n)
         else:
-            return (-1) * jacobi(a / 2, n)
+            return (-1) * jacobi(a // 2, n)
 
     if n % 4 == 1 or a % 4 == 1:
         return jacobi(n, a)
