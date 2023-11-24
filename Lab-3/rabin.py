@@ -237,10 +237,10 @@ class Rabin_User:
         C, b1, b2 = self.serv.encrypt(M, self.n, self.b)
         print(f"Received cyphertext: {C}")
 
-        Roots = sqrt_modpq(int(C, 16) + (self.b**2 * pow(2, -2, self.serv.n) % self.serv.n), self.p, self.q)
+        Roots = sqrt_modpq((int(C, 16) + (pow(self.b, 2, self.n) * pow(2, -2, self.n)) % self.n), self.p, self.q)
         for m in Roots:
             if [b1, b2] == [(m % self.n) % 2, (sympy.jacobi_symbol(m, self.n) == 1)]:
-                M1 = (m - (self.b * pow(2, -1, self.serv.n))) % self.serv.n
+                M1 = (m - (self.b * pow(2, -1, self.n))) % self.n
                 break
         
         M2 = num2str(rabin_unformat(M1))
@@ -287,9 +287,9 @@ print(f"q1 = {q1}")
 # ### Створення користувача та надсилання всіх доступних йому запитів
 
 # %%
-u_r = Rabin_User(p1, q1, b=rnd.randrange(0, 2**KEY_LENGTH))
+u_r = Rabin_User(p1, q1, b=rnd.randrange(0, p1*q1))
 u_r.send_message("sdjdfgjdhgfjdgfhj")
-u_r.receive_message("Hello!")
+u_r.receive_message("Asdjsghdfhisjdfh!")
 u_r.send_message_sign("Hello!")
 u_r.receive_message_sign("Hello!")
 
@@ -363,12 +363,14 @@ class ZNP_User:
 
             print("\n==== Asking to take root =====")
             x2 = int(self.serv.take_sqrt_mod_n(pow(x1, 2, self.serv.n)), 16)
-            print("========================")
+            print("=======================")
             print(f"\nCandidate: {x2}")
             
             if x1 != x2 and x1 != ((-x2) % self.serv.n):
                 print("Candidate is OK!")
                 break
+            else:
+                print("Reroll!")
 
         p = math.gcd(x1 - x2, self.serv.n)
         # q = math.gcd(x1 + x2, self.serv.n)
@@ -378,7 +380,7 @@ class ZNP_User:
         print(f"p: {p}")
         print(f"q: {q}")
         print(f"p*q: {p*q}")
-        print("===========\n")
+        print("==========\n")
 
         check = (p*q == self.serv.n)
         if check:
